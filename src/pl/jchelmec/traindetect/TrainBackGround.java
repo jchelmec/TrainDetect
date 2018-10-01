@@ -3,9 +3,12 @@ package pl.jchelmec.traindetect;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.opencv.core.Rect;
 import org.opencv.video.BackgroundSubtractorMOG2;
 import org.opencv.video.Video;
 
@@ -78,16 +81,19 @@ public class TrainBackGround extends JFrame {
 				catch (InterruptedException ex) {}
 			}
 			Graphics g = panel.getGraphics();
-			nowyobraz = obraz.getOneFrame();
 			nowyobrazBS = obraz.getOneBS();
+			nowyobraz = obraz.getOneFrame();
+//			ArrayList<Rect> rectArray = obraz.getRectBS();
+			
 			if (nowyobraz!=null & nowyobrazBS != null) {
 				setSize(nowyobraz.getWidth()+nowyobrazBS.getWidth(), nowyobraz.getHeight()+20);
 			}
 			while (true) {
-				nowyobraz = obraz.getOneFrame();
 				nowyobrazBS = obraz.getOneBS();
+				nowyobraz = obraz.getOneFrame();
 				g.drawImage(nowyobraz, 0, 0, null);
 				g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
+				
 				
 			}
 				
