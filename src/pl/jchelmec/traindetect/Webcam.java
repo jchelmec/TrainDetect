@@ -75,6 +75,7 @@ public class Webcam {
 //	     Mat matrix = Imgcodecs.imread("DSC_0722.jpg",Imgcodecs.IMREAD_COLOR);
 //	     Imgcodecs.imwrite("obraz.jpg", matrix);
 	
+	    
 	      
 	      
 	}
