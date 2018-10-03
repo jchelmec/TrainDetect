@@ -66,35 +66,16 @@ public class Webcam {
 		 matrix = new Mat();
 		 mask = new Mat();
 		
-
-		 
-
-		 //mog2.setHistory(500);
-		 //mog2.setVarThreshold(10);
-	
-
-		
-		
 		 // If camera is opened
 	      if(!capture.isOpened()) {
 	         System.out.println("camera not detected");
 	      } else
 	         System.out.println("Camera detected ");
 		 
-//	     Mat matrix = Imgcodecs.imread("DSC_0722.jpg",Imgcodecs.IMREAD_COLOR);
-//	     Imgcodecs.imwrite("obraz.jpg", matrix);
-	
-	   
-	      
-	      
-	      
 	}
 	
 	public BufferedImage getOneFrame(){
 		BufferedImage nowyobraz = null;
-		
-//		mask = getMask(matrix);
-
 		
 		nowyobraz = conv1.convert(matrix);
 		
@@ -151,10 +132,6 @@ public class Webcam {
 		}
 		
 		
-//			Imgproc.drawContours(mask, contours, 0, new Scalar(0, 60, 250));
-//		for (int i = 0;i<rectArray.size();i++) {
-//			System.out.println(rectArray.get(0));
-//		}
 		
 		nowyobrazBS = conv2.convert(mask);
 		return nowyobrazBS;
