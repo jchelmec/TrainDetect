@@ -63,9 +63,9 @@ public class Webcam {
 		 matrix = new Mat();
 		 mask = new Mat();
 		 matrix_grey = new Mat();
-		 mog2.setHistory(500);
-		 mog2.setVarThreshold(10);
-	
+//		 mog2.setHistory(500);
+//		 mog2.setVarThreshold(10);
+		 
 		
 		
 		 // If camera is opened
@@ -99,27 +99,27 @@ public class Webcam {
 		capture.read(matrix);
 		mask = getMask(matrix);
 		
-				Mat erode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(
-						8, 8));
-				Mat dilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
-						new Size(8, 8));
+//				Mat erode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(
+//						8, 8));
+//				Mat dilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+//						new Size(8, 8));
+//		
+//				Mat openElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+//						new Size(2, 2), new Point(1, 1));
+//				Mat closeElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+//						new Size(7, 7), new Point(3, 3));
 		
-				Mat openElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
-						new Size(3, 3), new Point(1, 1));
-				Mat closeElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
-						new Size(7, 7), new Point(3, 3));
-		
-				Imgproc.threshold(mask, mask, 127, 255, Imgproc.THRESH_BINARY);
-				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, erode);
-				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, dilate);
-				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, openElem);
-				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_CLOSE, closeElem);
-		
+//				Imgproc.threshold(mask, mask, 127, 255, Imgproc.THRESH_BINARY);
+//				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, erode);
+//				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, dilate);
+//				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, openElem);
+//				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_CLOSE, closeElem);
+//		
 		List <MatOfPoint> contours = new ArrayList<>();
 		Mat hierarchy = new Mat();
 		Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 		Rect rect = null;
-		double maxArea=100;
+		double maxArea=500;
 		Scalar colorObictRect = new Scalar(0,0,255);
 		ScreenLine scrlinLeft = new ScreenLine(matrix, 200,	0, 200, 480);
 		ScreenLine scrlinRight = new ScreenLine(matrix, 440,0, 440, 480);
