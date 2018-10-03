@@ -86,9 +86,11 @@ public class Webcam {
 		
 //		mask = getMask(matrix);
 
+		
 		nowyobraz = conv1.convert(matrix);
+		
 		return nowyobraz;
-	}
+		}
 	
 	public BufferedImage getOneBS(){
 		
@@ -99,6 +101,9 @@ public class Webcam {
 		Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 		Rect rect = null;
 		double maxArea=100;
+		Scalar colorObictRect = new Scalar(0,0,255);
+		ScreenLine scrlinLeft = new ScreenLine(matrix, 200,	0, 200, 480);
+		ScreenLine scrlinRight = new ScreenLine(matrix, 440,0, 440, 480);
 		
 		
 		for (int i=0; i<contours.size();i++) {
@@ -108,10 +113,15 @@ public class Webcam {
 				rect = Imgproc.boundingRect(contours.get(i));
 				if (rect.height > 100 && rect.width >100) {
 					rectArray.add(rect);
-					Imgproc.rectangle(matrix, new Point(rect.x,rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0,0,255),4);
+					if (rect.x < scrlinRight.x1 && (rect.x + rect.width) > scrlinLeft.x1) {
+						colorObictRect = new Scalar(0,255,0);
+						
+					}
+					Imgproc.rectangle(matrix, new Point(rect.x,rect.y), new Point(rect.x + rect.width, rect.y + rect.height), colorObictRect,4);
 				}
 			}
 		}
+		
 		
 //			Imgproc.drawContours(mask, contours, 0, new Scalar(0, 60, 250));
 //		for (int i = 0;i<rectArray.size();i++) {
@@ -148,4 +158,27 @@ class ConvertImage{
 		return obraz;
 		
 	}
+}
+
+class ScreenLine{
+	
+	int x1,y1,x2,y2;
+
+	public ScreenLine(Mat matrix,int x1, int y1, int x2,int y2) {
+		// TODO Auto-generated constructor stub
+		this.x1=x1;
+		this.x2=x2;
+		this.y1=y1;
+		this.y2=y2;
+		Imgproc.line(matrix, new Point(x1,y1), new Point(x2,y2), new Scalar(255,0,0),3);
+	}
+	
+	
+	public void setLine(int x1, int y1, int x2,int y2) {
+	
+			
+	}
+	
+	
+	
 }
