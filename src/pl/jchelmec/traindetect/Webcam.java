@@ -19,6 +19,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Rect2d;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -37,7 +38,7 @@ public class Webcam {
 	VideoCapture capture;
 	Mat matrix;
 	BackgroundSubtractorMOG2 mog2 = Video.createBackgroundSubtractorMOG2();
-	Mat mask, bg;
+	Mat mask, bg, matrix_grey;
 	ConvertImage conv1 = new ConvertImage();
 	ConvertImage conv2 = new ConvertImage();
 	MatOfRect trackresult;
@@ -61,6 +62,7 @@ public class Webcam {
 		 capture = new VideoCapture(0);
 		 matrix = new Mat();
 		 mask = new Mat();
+		 matrix_grey = new Mat();
 		 mog2.setHistory(500);
 		 mog2.setVarThreshold(10);
 	
@@ -96,6 +98,23 @@ public class Webcam {
 		
 		capture.read(matrix);
 		mask = getMask(matrix);
+		
+				Mat erode = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(
+						8, 8));
+				Mat dilate = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+						new Size(8, 8));
+		
+				Mat openElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+						new Size(3, 3), new Point(1, 1));
+				Mat closeElem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,
+						new Size(7, 7), new Point(3, 3));
+		
+				Imgproc.threshold(mask, mask, 127, 255, Imgproc.THRESH_BINARY);
+				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, erode);
+				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, dilate);
+				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_OPEN, openElem);
+				Imgproc.morphologyEx(mask, mask, Imgproc.MORPH_CLOSE, closeElem);
+		
 		List <MatOfPoint> contours = new ArrayList<>();
 		Mat hierarchy = new Mat();
 		Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
