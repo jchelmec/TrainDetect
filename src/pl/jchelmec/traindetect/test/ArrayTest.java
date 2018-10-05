@@ -21,7 +21,7 @@ public class ArrayTest {
 			
 			for (int i=0;i<5;i++) {
 				for (int n=0;n<dane.length-1;n++) {
-					dane[n] = dane[n] * i;
+					dane[n] = dane[n] * 2;
 				}
 				
 				danelista.add(dane.clone());
@@ -32,8 +32,13 @@ public class ArrayTest {
 			
 			Double[] a= it.next();
 			Double[] b = it.next();
-			System.out.println(it.next()[2]);
-			System.out.println(it.next()[3]);
+			System.out.println(danelista.get(0)[1]);
+			System.out.println(danelista.get(1)[1]);
+			System.out.println(danelista.get(2)[1]);
+			System.out.println(danelista.get(3)[1]);
+			System.out.println(danelista.get(4)[1]);
+						
+	
 	}
 
 }
