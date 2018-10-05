@@ -2,6 +2,7 @@ package pl.jchelmec.traindetect.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -16,14 +17,23 @@ public class ArrayTest {
 			dane[3]=2.8;
 			dane[4]=4.9;
 			
-			Vector<Double[]> danelista = new Vector<>();
+			List<Double[]> danelista = new ArrayList<>();
 			
 			for (int i=0;i<5;i++) {
-				danelista.add(dane);
+				for (int n=0;n<dane.length-1;n++) {
+					dane[n] = dane[n] * i;
+				}
+				
+				danelista.add(dane.clone());
 				
 			}
 			
-			System.out.println(danelista.get(1)[2]);
+			Iterator<Double[]> it = danelista.iterator();
+			
+			Double[] a= it.next();
+			Double[] b = it.next();
+			System.out.println(it.next()[2]);
+			System.out.println(it.next()[3]);
 	}
 
 }
