@@ -7,9 +7,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfInt;
@@ -38,25 +40,17 @@ public class Webcam {
 	VideoCapture capture;
 	Mat matrix;
 	BackgroundSubtractorMOG2 mog2 = Video.createBackgroundSubtractorMOG2();
-	Mat mask, bg, matrix_grey;
+	Mat mask, bg, dmask;
 	ConvertImage conv1 = new ConvertImage();
 	ConvertImage conv2 = new ConvertImage();
 	MatOfRect trackresult;
 	MatOfInt numdetect;
-	ArrayList<Rect> rectArray = new ArrayList<>();
+	Vector<Rect> rectArray = new Vector<>();
 	
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		}
 	
-	Mat getMask(Mat matrix){
-		 mog2.setHistory(500);
-		 mog2.setVarThreshold(10);
-		 mog2.setBackgroundRatio(0.5);	
-		mog2.apply(matrix, mask);
-//		mog2.setVarMax(100);
-		return mask;
-	}
 	
 	Webcam(){
 	 
@@ -73,6 +67,19 @@ public class Webcam {
 	         System.out.println("Camera detected ");
 		 
 	}
+	
+	Mat getMask(Mat matrix){
+//		Mat dmask = new Mat(matrix.size(), CvType.CV_8UC1);
+//		Imgproc.cvtColor(matrix, dmask, Imgproc.COLOR_BGRA2GRAY, 0);
+		mog2.setHistory(500);
+		mog2.setVarThreshold(10);
+		mog2.setBackgroundRatio(0.5);	
+		mog2.apply(matrix, mask);
+//		Imgproc.cvtColor(dmask, matrix, Imgproc.COLOR_GRAY2BGRA, 0);
+//		mog2.setVarMax(100);
+		return mask;
+	}
+
 	
 	public BufferedImage getOneFrame(){
 		BufferedImage nowyobraz = null;
@@ -137,7 +144,7 @@ public class Webcam {
 		return nowyobrazBS;
 	}
 	
-	public ArrayList<Rect> getRectBS(){
+	public Vector<Rect> getRectBS(){
 		
 		return rectArray;
 	}
