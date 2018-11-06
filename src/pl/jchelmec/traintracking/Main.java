@@ -144,6 +144,7 @@ public class Main {
 				frame = diffFrame.clone();
 
 				array = detectionContours(diffFrame);
+				
 				// ///////
 				Vector<Point> detections = new Vector<>();
 				// detections.clear();

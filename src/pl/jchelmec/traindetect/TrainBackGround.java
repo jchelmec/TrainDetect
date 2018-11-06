@@ -3,6 +3,7 @@ package pl.jchelmec.traindetect;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.security.acl.NotOwnerException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -35,7 +36,7 @@ public class TrainBackGround extends JFrame {
 	     EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						new TrainBackGround(100,100,645,485);
+						new TrainBackGround(100,100,850,485);
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -52,7 +53,7 @@ public class TrainBackGround extends JFrame {
 	     setBounds(x,y,w,h);
 	     
 	       //nowyobraz = obraz.getImage();
-	     setSize(1300, 500);
+	     setSize(1800, 500);
 	     
 	  // TODO Auto-generated method stub
 	     obraz = new Webcam();
@@ -83,6 +84,10 @@ public class TrainBackGround extends JFrame {
 			Graphics g = panel.getGraphics();
 			nowyobrazBS = obraz.getOneBS();
 			nowyobraz = obraz.getOneFrame();
+			System.out.println("wielkoœæ obrazu: " + obraz.getVideoSize());
+			System.out.println("wielkoœæ obrazu: " + obraz.getBSVideoSize());
+			
+			
 //			ArrayList<Rect> rectArray = obraz.getRectBS();
 			
 			if (nowyobraz!=null & nowyobrazBS != null) {

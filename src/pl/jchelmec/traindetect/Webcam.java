@@ -54,9 +54,9 @@ public class Webcam {
 	
 	Webcam(){
 	 
-	      
+	      String file = "/Video/00019.avi";
 //	      Imgcodecs imgcodecs = new Imgcodecs();
-		 capture = new VideoCapture(0);
+		 capture = new VideoCapture(file);
 		 matrix = new Mat();
 		 mask = new Mat();
 		
@@ -127,7 +127,7 @@ public class Webcam {
 			double contourArea = Imgproc.contourArea(contour);
 			if (contourArea > maxArea) {
 				rect = Imgproc.boundingRect(contours.get(i));
-				if (rect.height > 100 && rect.width >100) {
+				if (rect.height > 10 && rect.width >100) {
 					rectArray.add(rect);
 					if (rect.x < scrlinRight.x1 && (rect.x + rect.width) > scrlinLeft.x1) {
 						colorObictRect = new Scalar(0,255,0);
@@ -147,6 +147,14 @@ public class Webcam {
 	public Vector<Rect> getRectBS(){
 		
 		return rectArray;
+	}
+	
+	public Size getVideoSize() {
+		return matrix.size();
+	}
+	
+	public Size getBSVideoSize() {
+		return mask.size();
 	}
 }
 
