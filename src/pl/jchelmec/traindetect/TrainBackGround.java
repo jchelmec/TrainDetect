@@ -3,13 +3,14 @@ package pl.jchelmec.traindetect;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.security.acl.NotOwnerException;
+
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
 import org.opencv.video.BackgroundSubtractorMOG2;
 import org.opencv.video.Video;
 
@@ -17,7 +18,7 @@ public class TrainBackGround extends JFrame {
 
 	BufferedImage nowyobraz;
 	BufferedImage nowyobrazBS;
-	Webcam obraz;
+	static Webcam obraz;
 	JPanel panel;
 	
 	
@@ -36,8 +37,7 @@ public class TrainBackGround extends JFrame {
 	     EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						new TrainBackGround(100,100,850,485);
-						
+						new TrainBackGround();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -45,19 +45,21 @@ public class TrainBackGround extends JFrame {
 			});
 	}
 	
-	public TrainBackGround(int x, int y, int w, int h){
+	public TrainBackGround() {
 		
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	     panel = new JPanel();
-	     getContentPane().add(panel);
-	     setBounds(x,y,w,h);
+		 panel = new JPanel();
+		 getContentPane().add(panel);
 	     
-	       //nowyobraz = obraz.getImage();
-	     setSize(1800, 500);
-	     
-	  // TODO Auto-generated method stub
-	     obraz = new Webcam();
-	     			
+		 obraz = new Webcam();
+		 nowyobrazBS = obraz.getOneBS();
+		 nowyobraz = obraz.getOneFrame();
+		 Size size = obraz.getVideoSize();
+		 System.out.println(size);
+		 int videoW = (int)obraz.getVideoSize().width;
+		 int videoH = (int)obraz.getVideoSize().height;
+		 setBounds(100,100,videoW*2,videoH);
+	  	
 	  	new DetectThread().start();
 	  	setVisible(true);
 	     
@@ -66,32 +68,21 @@ public class TrainBackGround extends JFrame {
 	public void paint (Graphics g){
 		super.paint(g);
 		g = panel.getGraphics();
-//		if (nowyobraz!=null){
-//            setSize(nowyobraz.getWidth()+5, nowyobraz.getHeight()+5);
-//            g.drawImage(nowyobraz, 0, 0, rootPane);
-//        }
 	}
 
-	public class DetectThread extends Thread {
+	class DetectThread extends Thread {
 
-	
 		@Override
 		public void run() {
 			while (panel == null || panel.getGraphics() == null) {
 				try {Thread.sleep(1000);}
 				catch (InterruptedException ex) {}
 			}
+			
 			Graphics g = panel.getGraphics();
-			nowyobrazBS = obraz.getOneBS();
-			nowyobraz = obraz.getOneFrame();
-			System.out.println("wielkoœæ obrazu: " + obraz.getVideoSize());
-			System.out.println("wielkoœæ obrazu: " + obraz.getBSVideoSize());
-			
-			
-//			ArrayList<Rect> rectArray = obraz.getRectBS();
 			
 			if (nowyobraz!=null & nowyobrazBS != null) {
-				setSize(nowyobraz.getWidth()+nowyobrazBS.getWidth(), nowyobraz.getHeight()+20);
+				setSize(nowyobraz.getWidth()+nowyobrazBS.getWidth(), nowyobraz.getHeight());
 			}
 			while (true) {
 				nowyobrazBS = obraz.getOneBS();
@@ -99,11 +90,8 @@ public class TrainBackGround extends JFrame {
 				g.drawImage(nowyobraz, 0, 0, null);
 				g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
 				
-				
 			}
-				
 		}
- 
 	}
 }	
 

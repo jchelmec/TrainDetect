@@ -54,7 +54,7 @@ public class Webcam {
 	
 	Webcam(){
 	 
-	      String file = "/Video/00019.avi";
+	      String file = "c:/Video/00019.avi";
 //	      Imgcodecs imgcodecs = new Imgcodecs();
 		 capture = new VideoCapture(file);
 		 matrix = new Mat();
