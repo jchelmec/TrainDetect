@@ -54,6 +54,7 @@ public class TrainBackGround extends JFrame {
 		 obraz = new Webcam();
 		 nowyobrazBS = obraz.getOneBS();
 		 nowyobraz = obraz.getOneFrame();
+		 
 		 Size size = obraz.getVideoSize();
 		 System.out.println(size);
 		 int videoW = (int)obraz.getVideoSize().width;
@@ -89,7 +90,11 @@ public class TrainBackGround extends JFrame {
 				nowyobraz = obraz.getOneFrame();
 				g.drawImage(nowyobraz, 0, 0, null);
 				g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
-				
+//				int szerRect = obraz.getRectBS().
+//				if (szerRect > 0) { 
+//					System.out.print(obraz.getOneRect()); System.out.println(" " + szerRect + " " + obraz.getVideoSize().width/2);
+//				}
+				System.out.println(obraz.getRectBS());
 			}
 		}
 	}

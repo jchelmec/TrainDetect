@@ -47,6 +47,8 @@ public class Webcam {
 	MatOfInt numdetect;
 	Vector<Rect> rectArray = new Vector<>();
 	
+	Rect oneRect = new Rect();
+	
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		}
@@ -54,11 +56,11 @@ public class Webcam {
 	
 	Webcam(){
 	 
-	      String file = "c:/Video/00019.avi";
+	      String file = "d:/TrainVideo/Train.mp4";
 //	      Imgcodecs imgcodecs = new Imgcodecs();
 		 capture = new VideoCapture(file);
 		 matrix = new Mat();
-		 mask = new Mat();
+		 mask = new Mat(); 
 		
 		 // If camera is opened
 	      if(!capture.isOpened()) {
@@ -118,9 +120,11 @@ public class Webcam {
 		Rect rect = null;
 		double maxArea=100;
 		Scalar colorObictRect = new Scalar(0,0,255);
-		ScreenLine scrlinLeft = new ScreenLine(matrix, 200,	0, 200, 480);
-		ScreenLine scrlinRight = new ScreenLine(matrix, 440,0, 440, 480);
+		ScreenLine scrlinLeft = new ScreenLine(matrix, 200,	0, 200, 1080);
+		ScreenLine scrlinRight = new ScreenLine(matrix, 1720,0, 1720,1080);
 		
+		Vector<Rect> rectArrayOneFrame = new Vector<>();
+		Integer x1,x2,y1,y2 = null;
 		
 		for (int i=0; i<contours.size();i++) {
 			Mat contour = contours.get(i);
@@ -128,14 +132,36 @@ public class Webcam {
 			if (contourArea > maxArea) {
 				rect = Imgproc.boundingRect(contours.get(i));
 				if (rect.height > 10 && rect.width >100) {
-					rectArray.add(rect);
 					if (rect.x < scrlinRight.x1 && (rect.x + rect.width) > scrlinLeft.x1) {
 						colorObictRect = new Scalar(0,255,0);
+//						if (x1 == null) {
+//							
+//						}
+						
+						System.out.println(rect);
+						rectArrayOneFrame.add(rect);
 						
 					}
+//					System.out.println(rect);
+//					oneRect = rect;
 					Imgproc.rectangle(matrix, new Point(rect.x,rect.y), new Point(rect.x + rect.width, rect.y + rect.height), colorObictRect,4);
 				}
+//			}else {
+//				double[] dd = {0,0,0,0};
+//				rect.set(dd);
+//				oneRect = rect;
 			}
+				
+			
+		}
+		
+		if ( rectArrayOneFrame.size() >0) {
+		
+			Rect r = rectArrayOneFrame.get(0);
+			
+			
+				
+			rectArray.add(r);
 		}
 		
 		
@@ -147,6 +173,11 @@ public class Webcam {
 	public Vector<Rect> getRectBS(){
 		
 		return rectArray;
+	}
+	
+	public Rect getOneRect(){
+		
+		return oneRect;
 	}
 	
 	public Size getVideoSize() {

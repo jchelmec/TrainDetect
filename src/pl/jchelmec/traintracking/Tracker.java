@@ -151,9 +151,9 @@ public class Tracker extends JTracker {
 								.get(assignment.get(j)).br().x) / 2), rectArray
 								.get(assignment.get(j)).tl().y);
 
-				Imgproc.putText(imag, tracks.get(j).track_id + "", pt2,
-						2 * Core.FONT_HERSHEY_PLAIN, 1, new Scalar(255, 255,
-								255), 1);
+//				Imgproc.putText(imag, tracks.get(j).track_id + "", pt2,
+//						2 * Core.FONT_HERSHEY_PLAIN, 1, new Scalar(255, 255,
+//								255), 1);
 				if (tracks.get(j).history.size() < 20)
 					tracks.get(j).history.add(pt1);
 				else {

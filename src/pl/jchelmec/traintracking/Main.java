@@ -196,16 +196,16 @@ public class Main {
 					}
 				}
 
-					
-					
-						Imgproc.putText(imag, "Input: " + CONFIG.filename, new Point(20, 360),
-								Core.FONT_HERSHEY_PLAIN, 1, new Scalar(255, 255, 255),
-								1);
-						Imgproc.putText(imag,
-								"So track hien tai: " + tracker.tracks.size()
-										+ "     Da xoa: " + tracker.track_removed,
-								new Point(20, 50), Core.FONT_HERSHEY_PLAIN, 1,
-								new Scalar(255, 255, 255), 1);
+//					
+//					
+//						Imgproc.putText(imag, "Input: " + CONFIG.filename, new Point(20, 360),
+//								Core.FONT_HERSHEY_PLAIN, 1, new Scalar(255, 255, 255),
+//								1);
+//						Imgproc.putText(imag,
+//								"So track hien tai: " + tracker.tracks.size()
+//										+ "     Da xoa: " + tracker.track_removed,
+//								new Point(20, 50), Core.FONT_HERSHEY_PLAIN, 1,
+//								new Scalar(255, 255, 255), 1);
 			}
 
 			i = 1;
