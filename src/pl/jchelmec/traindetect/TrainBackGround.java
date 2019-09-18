@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.opencv.core.CvException;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.video.BackgroundSubtractorMOG2;
@@ -20,6 +21,8 @@ public class TrainBackGround extends JFrame {
 	BufferedImage nowyobrazBS;
 	static Webcam obraz;
 	JPanel panel;
+	double time = 0;
+	boolean przejazd = false;
 	
 	
 
@@ -50,16 +53,16 @@ public class TrainBackGround extends JFrame {
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 panel = new JPanel();
 		 getContentPane().add(panel);
-	     
-		 obraz = new Webcam();
+		 String file = "d:/TrainVideo/TrainLewo.mp4";
+		 obraz = new Webcam(file);
 		 nowyobrazBS = obraz.getOneBS();
 		 nowyobraz = obraz.getOneFrame();
 		 
 		 Size size = obraz.getVideoSize();
 		 System.out.println(size);
-		 int videoW = (int)obraz.getVideoSize().width;
-		 int videoH = (int)obraz.getVideoSize().height;
-		 setBounds(100,100,videoW*2,videoH);
+		 int videoW = (int)obraz.getFrameWidth();
+		 int videoH = (int)obraz.getFrameHeight();
+		 setBounds(0,0,videoW*2,videoH);
 	  	
 	  	new DetectThread().start();
 	  	setVisible(true);
@@ -83,19 +86,37 @@ public class TrainBackGround extends JFrame {
 			Graphics g = panel.getGraphics();
 			
 			if (nowyobraz!=null & nowyobrazBS != null) {
-				setSize(nowyobraz.getWidth()+nowyobrazBS.getWidth(), nowyobraz.getHeight());
+//				setSize(nowyobraz.getWidth()+nowyobrazBS.getWidth(), nowyobraz.getHeight());
+				setSize((int)obraz.getFrameWidth(), (int)obraz.getFrameHeight());
 			}
+			
 			while (true) {
-				nowyobrazBS = obraz.getOneBS();
-				nowyobraz = obraz.getOneFrame();
-				g.drawImage(nowyobraz, 0, 0, null);
-				g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
-//				int szerRect = obraz.getRectBS().
-//				if (szerRect > 0) { 
-//					System.out.print(obraz.getOneRect()); System.out.println(" " + szerRect + " " + obraz.getVideoSize().width/2);
-//				}
-				System.out.println(obraz.getRectBS());
+				
+				double fps= obraz.getVideoFps();
+				try {
+					nowyobrazBS = obraz.getOneBS();
+					nowyobraz = obraz.getOneFrame();
+					g.drawImage(nowyobraz, 0, 0, null);
+					g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
+					
+					if (obraz.getOneRect().width > 0 && przejazd == false) {
+						przejazd = true;
+						System.out.println("pocz¹tek przejazdu: " + obraz.getFramePosTime());
+					}
+					
+					if (obraz.getOneRect().width <0 && przejazd) {
+						przejazd = false;
+						System.out.println("koniec przeajzdu: " + obraz.getFramePosTime());
+					}
+					time = time + 1;
+					System.out.println(obraz.getOneRect() + "   Time: " + time / fps );
+					
+				} catch (CvException e) {
+					System.out.println("Ca³kowity czas: " + time / fps);
+					break;
+				}
 			}
+
 		}
 	}
 }	

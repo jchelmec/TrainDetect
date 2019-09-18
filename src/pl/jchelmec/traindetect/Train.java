@@ -46,7 +46,8 @@ public class Train extends JFrame {
 	     setSize(640, 500);
 	     
 	  // TODO Auto-generated method stub
-	     obraz = new Webcam();
+	     String file = "d:/TrainVideo/Train.mp4";
+	     obraz = new Webcam(file);
 	     			
 	  	new DetectThread().start();
 	  	setVisible(true);

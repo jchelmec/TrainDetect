@@ -30,6 +30,7 @@ import org.opencv.video.BackgroundSubtractorMOG2;
 import org.opencv.video.KalmanFilter;
 import org.opencv.video.Video;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 
 public class Webcam {
@@ -45,20 +46,32 @@ public class Webcam {
 	ConvertImage conv2 = new ConvertImage();
 	MatOfRect trackresult;
 	MatOfInt numdetect;
+	public double fps;
 	Vector<Rect> rectArray = new Vector<>();
-	
 	Rect oneRect = new Rect();
+	double frameWidth;
+	double frameHeight;
+	ScreenLine scrlinLeft;
+	ScreenLine scrlinRight;
 	
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		}
 	
 	
-	Webcam(){
+	Webcam(String file){
 	 
-	      String file = "d:/TrainVideo/Train.mp4";
+	     
 //	      Imgcodecs imgcodecs = new Imgcodecs();
 		 capture = new VideoCapture(file);
+		 fps = capture.get(Videoio.CAP_PROP_FPS);
+		 capture.set(Videoio.CAP_PROP_FRAME_WIDTH,1200);
+		 capture.set(Videoio.CAP_PROP_FRAME_HEIGHT,800);
+		 frameWidth = capture.get(Videoio.CAP_PROP_FRAME_WIDTH);
+		 frameHeight = capture.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+		 System.out.println(frameWidth + " x " + frameHeight);
+
+		 
 		 matrix = new Mat();
 		 mask = new Mat(); 
 		
@@ -120,11 +133,15 @@ public class Webcam {
 		Rect rect = null;
 		double maxArea=100;
 		Scalar colorObictRect = new Scalar(0,0,255);
-		ScreenLine scrlinLeft = new ScreenLine(matrix, 200,	0, 200, 1080);
-		ScreenLine scrlinRight = new ScreenLine(matrix, 1720,0, 1720,1080);
+		scrlinLeft = new ScreenLine(matrix, (int)Math.round(frameWidth*0.1) ,0, (int)Math.round(frameWidth*0.1), (int)frameHeight);
+		scrlinRight = new ScreenLine(matrix, (int)Math.round(frameWidth*0.9),0, (int)Math.round(frameWidth*0.9), (int)frameHeight);
 		
 		Vector<Rect> rectArrayOneFrame = new Vector<>();
-		Integer x1,x2,y1,y2 = null;
+		Integer x1 = 0;
+		Integer x2 = 0;
+		Integer y1 = 0;
+		Integer y2 = 0;
+		boolean init = true;
 		
 		for (int i=0; i<contours.size();i++) {
 			Mat contour = contours.get(i);
@@ -134,35 +151,33 @@ public class Webcam {
 				if (rect.height > 10 && rect.width >100) {
 					if (rect.x < scrlinRight.x1 && (rect.x + rect.width) > scrlinLeft.x1) {
 						colorObictRect = new Scalar(0,255,0);
-//						if (x1 == null) {
-//							
-//						}
 						
-						System.out.println(rect);
-						rectArrayOneFrame.add(rect);
+						if (rect.x <= x1 || init ) { 
+							x1 = rect.x;
+						}
+						if (rect.y <= y1 || init )  {
+							y1 = rect.y;
+						}
+						if ((rect.x + rect.width) >= x2 || init ) {
+							x2 = rect.x + rect.width;
+						}
+						if ((rect.y + rect.height) >= y2 || init ) {
+							y2 = rect.y + rect.height;
+						}
+						init = false;
+						
+//						System.out.println(rect);
 						
 					}
-//					System.out.println(rect);
-//					oneRect = rect;
 					Imgproc.rectangle(matrix, new Point(rect.x,rect.y), new Point(rect.x + rect.width, rect.y + rect.height), colorObictRect,4);
 				}
-//			}else {
-//				double[] dd = {0,0,0,0};
-//				rect.set(dd);
-//				oneRect = rect;
 			}
-				
 			
 		}
-		
-		if ( rectArrayOneFrame.size() >0) {
-		
-			Rect r = rectArrayOneFrame.get(0);
-			
-			
-				
-			rectArray.add(r);
-		}
+			oneRect = new Rect(x1, y1, x2-x1, y2-y1);
+//					System.out.println("rect: " + r);
+					
+			rectArray.add(oneRect);
 		
 		
 		
@@ -186,6 +201,30 @@ public class Webcam {
 	
 	public Size getBSVideoSize() {
 		return mask.size();
+	}
+	
+	public double getVideoFps() {
+		return fps;
+	}
+	
+	public double getFrameWidth() {
+		return frameWidth;
+	}
+	
+	public double getFrameHeight() {
+		return frameHeight;
+	}
+	
+	public double getFramePosTime() {
+		return capture.get(Videoio.CAP_PROP_POS_MSEC);
+	}
+	
+	public int getScreenLineLeft() {
+		return scrlinLeft.getX1();
+	}
+
+	public int getScreenLineRight() {
+		return scrlinLeft.getX2();
 	}
 }
 
@@ -230,6 +269,13 @@ class ScreenLine{
 			
 	}
 	
-	
+	public int getX1 () {
+		return x1;
+	}
+
+	public int getX2 () {
+		return x2;
+	}
+
 	
 }
