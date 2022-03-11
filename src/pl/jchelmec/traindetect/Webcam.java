@@ -70,7 +70,6 @@ public class Webcam {
 		 frameWidth = capture.get(Videoio.CAP_PROP_FRAME_WIDTH);
 		 frameHeight = capture.get(Videoio.CAP_PROP_FRAME_HEIGHT);
 		 System.out.println(frameWidth + " x " + frameHeight);
-
 		 
 		 matrix = new Mat();
 		 mask = new Mat(); 
@@ -79,14 +78,15 @@ public class Webcam {
 	      if(!capture.isOpened()) {
 	         System.out.println("camera not detected");
 	      } else
-	         System.out.println("Camera detected ");
+	         System.out.println("Camera detected - File Loaded");
+	    
 		 
 	}
 	
 	Mat getMask(Mat matrix){
 //		Mat dmask = new Mat(matrix.size(), CvType.CV_8UC1);
 //		Imgproc.cvtColor(matrix, dmask, Imgproc.COLOR_BGRA2GRAY, 0);
-		mog2.setHistory(500);
+		mog2.setHistory(200);
 		mog2.setVarThreshold(10);
 		mog2.setBackgroundRatio(0.5);	
 		mog2.apply(matrix, mask);
@@ -224,7 +224,7 @@ public class Webcam {
 	}
 
 	public int getScreenLineRight() {
-		return scrlinLeft.getX2();
+		return scrlinRight.getX1();
 	}
 }
 

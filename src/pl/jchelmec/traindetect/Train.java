@@ -48,7 +48,7 @@ public class Train extends JFrame {
 	  // TODO Auto-generated method stub
 	     String file = "d:/TrainVideo/Train.mp4";
 	     obraz = new Webcam(file);
-	     			
+	     
 	  	new DetectThread().start();
 	  	setVisible(true);
 	     
@@ -73,15 +73,15 @@ public class Train extends JFrame {
 				catch (InterruptedException ex) {}
 			}
 			Graphics g = panel.getGraphics();
-			nowyobraz = obraz.getOneFrame();
-			if (nowyobraz!=null) {
-				setSize(nowyobraz.getWidth(), nowyobraz.getHeight()+20);
-			}
-			while (true) {
-				nowyobraz = obraz.getOneFrame();
-				g.drawImage(nowyobraz, 0, 0, rootPane);
-			}
-				
+//			nowyobraz = obraz.getOneFrame();
+//			if (nowyobraz!=null) {
+//				setSize(nowyobraz.getWidth(), nowyobraz.getHeight()+20);
+//			}
+//			while (true) {
+//				nowyobraz = obraz.getOneFrame();
+//				g.drawImage(nowyobraz, 0, 0, rootPane);
+//			}
+			System.out.println(" --------- Koniec --------------");
 		}
  
 	}
