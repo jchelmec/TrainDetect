@@ -40,7 +40,9 @@ public class Webcam {
 	int cols;
 	VideoCapture capture;
 	Mat matrix;
-	BackgroundSubtractorMOG2 mog2 = Video.createBackgroundSubtractorMOG2();
+	
+	BackgroundSubtractorMOG2 mog2;
+	BackgroundSubtractorKNN knn;
 	Mat mask, bg, dmask;
 	ConvertImage conv1 = new ConvertImage();
 	ConvertImage conv2 = new ConvertImage();
@@ -53,15 +55,31 @@ public class Webcam {
 	double frameHeight;
 	ScreenLine scrlinLeft;
 	ScreenLine scrlinRight;
+	int BGMethod;
+	
+	public static int MOG_METHOD = 1;
+	public static int KNN_METHOD = 2;
 	
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		}
 	
 	
-	Webcam(String file){
+	Webcam(String file, int BGMetod){
+		
+		this.BGMethod = BGMetod;
 	 
-	     
+	     if (BGMetod == 1){
+	    	int hist = 300;
+	    	double threshold = 10;
+	    	boolean shadow = false;
+		 	mog2 = Video.createBackgroundSubtractorMOG2(hist, threshold, shadow);
+	     } else {
+	    	 int hist = 300;
+		     double dist = 10;
+	    	 boolean shadow = false;
+	    	 knn = Video.createBackgroundSubtractorKNN(hist, dist, shadow);
+	     }
 //	      Imgcodecs imgcodecs = new Imgcodecs();
 		 capture = new VideoCapture(file);
 		 fps = capture.get(Videoio.CAP_PROP_FPS);
@@ -86,10 +104,15 @@ public class Webcam {
 	Mat getMask(Mat matrix){
 //		Mat dmask = new Mat(matrix.size(), CvType.CV_8UC1);
 //		Imgproc.cvtColor(matrix, dmask, Imgproc.COLOR_BGRA2GRAY, 0);
-		mog2.setHistory(200);
-		mog2.setVarThreshold(10);
-		mog2.setBackgroundRatio(0.5);	
-		mog2.apply(matrix, mask);
+//		mog2.setHistory(300);
+//		mog2.setVarThreshold(10);
+//		mog2.setBackgroundRatio(0.5);	
+		if (BGMethod == 1) {
+			mog2.apply(matrix, mask);
+		}else {
+			knn.apply(matrix, mask);
+			
+		}
 //		Imgproc.cvtColor(dmask, matrix, Imgproc.COLOR_GRAY2BGRA, 0);
 //		mog2.setVarMax(100);
 		return mask;

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,7 +26,8 @@ public class TrainBackGround extends JFrame {
 	boolean przejazd = false;
 	boolean pociag = false;
 	String kierunek = "";
-	CzasPrzejazdu czas;
+	CzasPrzejazdu czasL;
+	CzasPrzejazdu czasP;
 	
 	
 
@@ -37,13 +39,13 @@ public class TrainBackGround extends JFrame {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String file = ("d:/TrainVideo/TrainNight.mp4") ;
+		String file = ("d:/TrainVideo/Testy/podmiejski1.mp4") ;
 	     //Rysowanie
 	     
 	     EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						new TrainBackGround(file);
+						new TrainBackGround(file, args);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -51,13 +53,14 @@ public class TrainBackGround extends JFrame {
 			});
 	}
 	
-	public TrainBackGround(String file) {
+	public TrainBackGround(String file, String[] args) {
 		
 		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 panel = new JPanel();
 		 getContentPane().add(panel);
 //		 String file = "d:/TrainVideo/Train.mp4";
-		 obraz = new Webcam(file);
+		 
+		 obraz = new Webcam(file, Webcam.MOG_METHOD);
 		 nowyobrazBS = obraz.getOneBS();
 		 nowyobraz = obraz.getOneFrame();
 		
@@ -93,6 +96,7 @@ public class TrainBackGround extends JFrame {
 				setSize((int)obraz.getFrameWidth(), (int)obraz.getFrameHeight());
 			}
 			
+			List<CzasPrzejazdu> listaprzejazdow = new ArrayList<CzasPrzejazdu>();
 			
 			while (true) {
 				
@@ -104,9 +108,10 @@ public class TrainBackGround extends JFrame {
 					g.drawImage(nowyobrazBS,nowyobraz.getWidth(), 0, null);
 					
 					Rect train = obraz.getOneRect();
+//					System.out.println("Train =  " + train);
 //					System.out.print((train.x < obraz.getScreenLineRight()) + "   ");
 					
-					
+					// Wykrycie pocz¹tku przejazdu w lewo
 					if (train.x > obraz.getFrameWidth()/2
 							&& train.x < obraz.getScreenLineRight()
 								&& train.width > 0
@@ -115,11 +120,13 @@ public class TrainBackGround extends JFrame {
 						przejazd = true;
 						kierunek = "lewo";
 						System.out.println("pocz¹tek przejazdu: " + obraz.getFramePosTime() + "    kierunek: " + kierunek);
-						 czas = new CzasPrzejazdu();
-						 czas.setStart(obraz.getFramePosTime());
-						 
+						 czasL = new CzasPrzejazdu();
+						 czasL.setKierunek(kierunek);
+						 czasL.setStart(obraz.getFramePosTime());
+						 listaprzejazdow.add(czasL);
 					}
 					
+					// Wykrycie pocz¹tku przejazdu w prawo
 					if ((train.x + train.width) < obraz.getFrameWidth()/2
 							&& (train.x + train.width) > obraz.getScreenLineLeft()
 								&& train.width > 0
@@ -128,25 +135,28 @@ public class TrainBackGround extends JFrame {
 						przejazd = true;
 						kierunek = "prawo";
 						System.out.println("pocz¹tek przejazdu: " + obraz.getFramePosTime() + "    kierunek: " + kierunek);
-						 czas = new CzasPrzejazdu();
-						 czas.setStart(obraz.getFramePosTime());
+						 czasP = new CzasPrzejazdu();
+						 czasP.setKierunek(kierunek);
+						 czasP.setStart(obraz.getFramePosTime());
+						 listaprzejazdow.add(czasP);
 					}
 					
-					
+					// Wykrycie koñca przejazdu w lewo
 					if (train.x < obraz.getScreenLineLeft() && przejazd && kierunek.equals("lewo")) {
 						przejazd = false;
 						kierunek = "";
 						System.out.println("koniec przejazdu: " + obraz.getFramePosTime());
-						czas.setKoniec(obraz.getFramePosTime());
-						System.out.println("Czas samego przejazdu: " + czas.getTime());
+						czasL.setKoniec(obraz.getFramePosTime());
+						System.out.println("Czas samego przejazdu: " + czasL.getTime());
 					}
 					
+					// Wykrycie koñca przejazdu w prawo
 					if ((train.x + train.width) > obraz.getScreenLineRight() && przejazd && kierunek.equals("prawo")) {
 						przejazd = false;
 						kierunek = "";
 						System.out.println("koniec przejazdu: " + obraz.getFramePosTime());
-						czas.setKoniec(obraz.getFramePosTime());
-						System.out.println("Czas samego przejazdu: " + czas.getTime() + " ms");
+						czasP.setKoniec(obraz.getFramePosTime());
+						System.out.println("Czas samego przejazdu: " + czasP.getTime() + " ms");
 					}
 					
 					// sprawdzenie czy jest to koniec przezdu czy nowy przejazd
@@ -155,6 +165,10 @@ public class TrainBackGround extends JFrame {
 					}else {
 						pociag = false;
 					}
+					
+					// Zapis poczatku i konca do pliku
+					
+					
 					
 					time = time + 1;
 					
@@ -167,27 +181,11 @@ public class TrainBackGround extends JFrame {
 					break;
 				}
 			}
+			
+			for (int i=0; i < listaprzejazdow.size(); i++){
+				System.out.println(listaprzejazdow.get(i));
+			}
 
 		}
 	}
 }	
-
-
-//class CzasPrzejazdu{
-//
-//	public double czasStart;
-//	public double czasKoniec;
-//	
-//	public void setStart(double czas) {
-//		this.czasStart = czas;
-//	}
-//	
-//	public void setKoniec(double czas) {
-//		this.czasKoniec = czas;
-//	}
-//	
-//	public double getTime() {
-//		return czasKoniec - czasStart;
-//	}
-//}
-
